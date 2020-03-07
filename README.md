@@ -1,4 +1,12 @@
-# How to talk with your Kubernetes cluster without kubectl
+# How to talk with your Kubernetes cluster using client-go
+
+## Pre Req
+
+* You need a cluster up and running
+* A working kubeconfig for that cluster to be present at your `~/.kube/config` location
+* A working Go dev environment
+
+### Just a heads up
 
 The things would be much simpler, but unfortunately, the current state of `client-go` versioning is that you need to go get a version of client-go that matches the version you got the example from.
 And you need to do that manually, by hand, without using `go mod`.
@@ -59,7 +67,8 @@ go mod tidy
 6. Replace the tags of k8s.io/{api,apimachinery,client-go} with the <$tag>
 
 ```zsh
-for dep in apimachinery api client-go; do sed -i "s/$dep .*/$dep $tag/" go.mod; done; rm go.mod-e
+cat go.mod | sed -e "s/apimachinery .*/apimachinery $tag/;s/api .*/api $tag/;s/client-go .*/client-go $tag/" > go.mod.fixed
+mv go.mod.fixed go.mod
 ```
 
 7. Build and run
