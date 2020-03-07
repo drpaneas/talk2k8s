@@ -13,7 +13,7 @@ import (
 
 func main() {
 	// ----------------------- //
-	// Start the client setup
+	// Start the client setup  //
 	// ----------------------- //
 
 	// input a kubeconfig file
