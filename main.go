@@ -12,9 +12,12 @@ import (
 )
 
 func main() {
-	// input a kubeconfig file either from ~/.kube/config
-	home := homeDir()
-	kubeconfig := filepath.Join(home, ".kube", "config")
+	// ----------------------- //
+	// Start the client setup
+	// ----------------------- //
+
+	// input a kubeconfig file
+	kubeconfig := filepath.Join(os.Getenv("HOME"), ".kube", "config")
 
 	// parse kubeconfig
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
@@ -28,14 +31,19 @@ func main() {
 		panic(err.Error())
 	}
 
-	// use the client to send Requests to the API Server
-	// get the Pod objects for all the namespaces
+	// ---------------------------------------------------------- //
+	// Start talking to k8s by sending Requests to the API Server //
+	// ---------------------------------------------------------- //
+
+	// Example 1
+	// Get the Pod objects for all the namespaces
 	pods, err := client.CoreV1().Pods("").List(metav1.ListOptions{})
 	if err != nil {
 		panic(err.Error())
 	}
 	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
 
+	// Example 2
 	// Test if a pod called "pod-with-two-containers" is running in the namespace "myproject"
 	namespace := "myproject"
 	pod := "pod-with-two-containers"
@@ -50,11 +58,4 @@ func main() {
 	} else {
 		fmt.Printf("Found pod %s in namespace %s\n", pod, namespace)
 	}
-}
-
-func homeDir() string {
-	if h := os.Getenv("HOME"); h != "" {
-		return h
-	}
-	return os.Getenv("USERPROFILE") // windows
 }
